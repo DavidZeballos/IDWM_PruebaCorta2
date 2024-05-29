@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "22f5a728-955d-4220-abe8-1281e7fd8539",
+		"name": "PruebaCorta2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AddChair",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": 1,\r\n    \"Nombre\": \"Silla1\",\r\n    \"Tipo\": \"Victoriano\",\r\n    \"Material\": \"Madera\",\r\n    \"Color\": \"Verde\",\r\n    \"Altura\": 40,\r\n    \"Anchura\": 20,\r\n    \"Profundidad\": 20,\r\n    \"Precio\": 1000,\r\n    \"Stock\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5018/api/chair/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetChairs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5018/api/chair/?tipo=Victoriano&material=Madera&color=Verde",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						""
+					],
+					"query": [
+						{
+							"key": "tipo",
+							"value": "Victoriano"
+						},
+						{
+							"key": "material",
+							"value": "Madera"
+						},
+						{
+							"key": "color",
+							"value": "Verde"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetChairByName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5018/api/chair/Silla1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						"Silla1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateChair",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Nombre\": \"Silla1\",\r\n    \"Tipo\": \"Moderno\",\r\n    \"Material\": \"Metal\",\r\n    \"Color\": \"Rojo\",\r\n    \"Altura\": 45,\r\n    \"Anchura\": 25,\r\n    \"Profundidad\": 25,\r\n    \"Precio\": 1500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5018/api/chair/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IncrementStock",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Stock\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5018/api/chair/1/stock",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						"1",
+						"stock"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PurchaseChair",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\": 1,\r\n    \"Cantidad\": 50,\r\n    \"TotalPagado\": 99999\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5018/api/chair/purchase",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						"purchase"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteChair",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5018/api/chair/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5018",
+					"path": [
+						"api",
+						"chair",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

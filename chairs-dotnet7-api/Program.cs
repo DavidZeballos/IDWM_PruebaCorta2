@@ -14,10 +14,10 @@ var app = builder.Build();
 var chairs = app.MapGroup("api/chair");
 chairs.MapPost("/", AddChair);
 chairs.MapGet("/", GetChairs);
-chairs.MapGet("/{name}", GetChairByName);
+chairs.MapGet("/{nombre}", GetChairByName);
 chairs.MapPut("/{id}", UpdateChair);
 chairs.MapPut("/{id}/stock", IncrementStock);
-chairs.MapPost("/chair/purchase", PurchaseChair);
+chairs.MapPost("/purchase", PurchaseChair);
 chairs.MapDelete("/{id}", DeleteChair);
 
 app.Run();
@@ -30,6 +30,8 @@ static IResult AddChair([FromBody] Chair chair, DataContext db)
         return TypedResults.BadRequest("La silla ya existe!");
     }
 
+    db.Chairs.Add(chair);
+    db.SaveChanges();
     return TypedResults.Created($"/chair/{chair.Id}", chair);
 }
 
@@ -46,15 +48,15 @@ static IResult GetChairs(
     }
     if(material != string.Empty)
     {
-        query = query.Where(c => c.Tipo == material);
+        query = query.Where(c => c.Material == material);
     }
     if(color != string.Empty)
     {
-        query = query.Where(c => c.Tipo == color);
+        query = query.Where(c => c.Color == color);
     }
 
     List<Chair> list = query.ToList();
-    return TypedResults.Ok(list);
+    return TypedResults.Ok(query.ToList());
 }
 
 static IResult GetChairByName(string nombre, DataContext db)
@@ -68,7 +70,7 @@ static IResult GetChairByName(string nombre, DataContext db)
     return TypedResults.Ok(existingChair);
 }
 
-static IResult UpdateChair([FromBody] UpdateChairDto chair, int id, DataContext db)
+static IResult UpdateChair([FromBody] UpdateChairDto chairUpdate, int id, DataContext db)
 {
     var existingChair = db.Chairs.Where(c => c.Id == id).FirstOrDefault();
     if(existingChair == null)
@@ -76,14 +78,14 @@ static IResult UpdateChair([FromBody] UpdateChairDto chair, int id, DataContext 
         return TypedResults.NotFound("La silla a modificar no existe!");
     }
 
-    existingChair.Nombre = chair.Nombre;
-    existingChair.Tipo = chair.Tipo;
-    existingChair.Material = chair.Material;
-    existingChair.Color = chair.Color;
-    existingChair.Altura = chair.Altura;
-    existingChair.Anchura = chair.Anchura;
-    existingChair.Profundidad = chair.Profundidad;
-    existingChair.Precio = chair.Precio;
+    existingChair.Nombre = chairUpdate.Nombre;
+    existingChair.Tipo = chairUpdate.Tipo;
+    existingChair.Material = chairUpdate.Material;
+    existingChair.Color = chairUpdate.Color;
+    existingChair.Altura = chairUpdate.Altura;
+    existingChair.Anchura = chairUpdate.Anchura;
+    existingChair.Profundidad = chairUpdate.Profundidad;
+    existingChair.Precio = chairUpdate.Precio;
 
     db.Chairs.Entry(existingChair).State = EntityState.Modified;
     db.SaveChanges();
@@ -98,26 +100,29 @@ static IResult IncrementStock([FromBody] IncrementStockDto chairStock, int id, D
         return TypedResults.NotFound("No se ha podido aumentar el stock, la silla no existe!");
     }
 
-    existingChair.Stock = existingChair.Stock + chairStock.Stock;
+    existingChair.Stock += chairStock.Stock;
 
     db.Chairs.Entry(existingChair).State = EntityState.Modified;
     db.SaveChanges();
     return TypedResults.NoContent();
 }
 
-static IResult PurchaseChair([FromBody] PurchaseChairDto chair, DataContext db)
+static IResult PurchaseChair([FromBody] PurchaseChairDto chairPurchase, DataContext db)
 {
-    var existingChair = db.Chairs.Where(c => c.Id == chair.Id).FirstOrDefault();
+    var existingChair = db.Chairs.Where(c => c.Id == chairPurchase.Id).FirstOrDefault();
     if(existingChair == null)
     {
         return TypedResults.BadRequest("La silla no existe!");
     }
 
-    var PrecioTotal = existingChair.Precio*chair.Cantidad;
-    if(existingChair.Stock >= chair.Cantidad
-        && PrecioTotal >= chair.TotalPagado)
+    var PrecioTotal = existingChair.Precio*chairPurchase.Cantidad;
+    if(existingChair.Stock >= chairPurchase.Cantidad
+        && PrecioTotal <= chairPurchase.TotalPagado)
     {
-        existingChair.Stock = existingChair.Stock - chair.Cantidad;
+        existingChair.Stock -= chairPurchase.Cantidad;
+        
+        db.Chairs.Entry(existingChair).State = EntityState.Modified;
+        db.SaveChanges();
         return TypedResults.NoContent();
     }
 
