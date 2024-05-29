@@ -7,6 +7,6 @@ namespace chairs_dotnet7_api
         public DataContext(DbContextOptions<DataContext> options)
             : base(options) { }
 
-        public DbSet<Chair> GetChairs { get; set; }
+        public DbSet<Chair> Chairs { get; set; }
     }
 }
